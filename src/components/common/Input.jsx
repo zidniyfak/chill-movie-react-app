@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import VisibilityOnIcon from '../icons/VisibilityOnIcon';
-import VisibilityOffIcon from '../icons/VisibilityOffIcon';
+import { MdVisibility, MdVisibilityOff } from 'react-icons/md';
 
 const Input = ({
   label,
@@ -38,13 +37,15 @@ const Input = ({
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 flex items-center justify-center text-text-light-secondary transition-colors hover:text-white focus:outline-none"
-            aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
+            className="text-text-light-secondary absolute right-3 flex items-center justify-center transition-colors hover:text-white focus:outline-none"
+            aria-label={
+              showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'
+            }
           >
             {showPassword ? (
-              <VisibilityOffIcon className="h-4 w-4" />
+              <MdVisibilityOff className="h-4 w-4" />
             ) : (
-              <VisibilityOnIcon className="h-4 w-4" />
+              <MdVisibility className="h-4 w-4" />
             )}
           </button>
         )}

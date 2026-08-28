@@ -1,9 +1,12 @@
 import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+
 import Button from '../common/Button';
 import Input from '../common/Input';
 import GoogleIcon from '../icons/GoogleIcon';
 
 const LoginForm = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
@@ -37,6 +40,8 @@ const LoginForm = () => {
       setLoading(false);
       alert(`Berhasil Masuk! Selamat datang kembali, ${username}!`);
     }, 1000);
+
+    navigate('/');
   };
 
   const handleGoogleLogin = () => {
@@ -86,16 +91,12 @@ const LoginForm = () => {
         <div className="mt-1 flex items-center justify-between text-[10px] text-white lg:text-sm">
           <span className="text-text-light-secondary flex gap-1">
             Belum punya akun?
-            <a
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                alert('Halaman Pendaftaran belum tersedia.');
-              }}
+            <Link
+              to="/register"
               className="font-medium text-white hover:underline"
             >
               Daftar
-            </a>
+            </Link>
           </span>
           <a
             href="#"
