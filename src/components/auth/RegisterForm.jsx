@@ -3,9 +3,10 @@ import Button from '../common/Button';
 import Input from '../common/Input';
 import GoogleIcon from '../icons/GoogleIcon';
 
-const LoginForm = () => {
+const RegisterForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -23,6 +24,12 @@ const LoginForm = () => {
       newErrors.password = 'Kata sandi minimal 6 karakter';
     }
 
+    if (!confirmPassword) {
+      newErrors.confirmPassword = 'Konfirmasi kata sandi wajib diisi';
+    } else if (confirmPassword !== password) {
+      newErrors.confirmPassword = 'Konfirmasi kata sandi tidak cocok';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -35,12 +42,12 @@ const LoginForm = () => {
     // Simulating API request
     setTimeout(() => {
       setLoading(false);
-      alert(`Berhasil Masuk! Selamat datang kembali, ${username}!`);
+      alert(`Pendaftaran Berhasil! Selamat bergabung, ${username}!`);
     }, 1000);
   };
 
-  const handleGoogleLogin = () => {
-    alert('Masuk dengan Google sedang dialihkan...');
+  const handleGoogleRegister = () => {
+    alert('Pendaftaran dengan Google sedang dialihkan...');
   };
 
   return (
@@ -59,76 +66,77 @@ const LoginForm = () => {
           required
         />
         {errors.username && (
-          <span className="text-error-default pl-1 text-xs">
-            {errors.username}
-          </span>
+          <span className="text-xs text-error-default pl-1">{errors.username}</span>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-1">
+        <Input
+          id="password"
+          label="Kata Sandi"
+          type="password"
+          placeholder="Masukkan kata sandi"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        {errors.password && (
+          <span className="text-xs text-error-default pl-1">{errors.password}</span>
         )}
       </div>
 
       <div className="flex flex-col gap-2">
         <div className="flex flex-col gap-1">
           <Input
-            id="password"
-            label="Kata Sandi"
+            id="confirmPassword"
+            label="Konfirmasi Kata Sandi"
             type="password"
-            placeholder="Masukkan kata sandi"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Masukkan ulang kata sandi"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
-          {errors.password && (
-            <span className="text-error-default pl-1 text-xs">
-              {errors.password}
-            </span>
+          {errors.confirmPassword && (
+            <span className="text-xs text-error-default pl-1">{errors.confirmPassword}</span>
           )}
         </div>
 
-        <div className="mt-1 flex items-center justify-between text-[10px] text-white lg:text-sm">
-          <span className="text-text-light-secondary flex gap-1">
-            Belum punya akun?
+        <div className="flex items-center justify-between text-white text-[10px] lg:text-sm mt-1">
+          <span className="flex gap-1 text-text-light-secondary">
+            Sudah punya akun?
             <a
               href="#"
               onClick={(e) => {
                 e.preventDefault();
-                alert('Halaman Pendaftaran belum tersedia.');
+                alert('Halaman Login belum tersedia.');
               }}
               className="font-medium text-white hover:underline"
             >
-              Daftar
+              Masuk
             </a>
           </span>
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              alert('Fitur Lupa Kata Sandi belum tersedia.');
-            }}
-            className="text-text-light-secondary font-medium transition-colors hover:text-white hover:underline"
-          >
-            Lupa kata sandi?
-          </a>
         </div>
       </div>
 
-      <div className="mt-2 flex flex-col items-center gap-2 lg:gap-3">
+      <div className="flex flex-col items-center gap-2 lg:gap-3 mt-2">
         <Button type="submit" disabled={loading}>
-          {loading ? 'Memproses...' : 'Masuk'}
+          {loading ? 'Memproses...' : 'Daftar'}
         </Button>
 
-        <div className="text-text-light-secondary my-1 text-xs lg:text-sm">
+        <div className="text-text-light-secondary text-xs lg:text-sm my-1">
           <span>Atau</span>
         </div>
 
         <Button
           type="button"
-          onClick={handleGoogleLogin}
+          onClick={handleGoogleRegister}
           icon={<GoogleIcon className="h-3 w-3 lg:h-4 lg:w-4" />}
         >
-          Masuk dengan Google
+          Daftar dengan Google
         </Button>
       </div>
     </form>
   );
 };
 
-export default LoginForm;
+export default RegisterForm;
