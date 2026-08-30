@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+
+import avatar from '../../assets/images/avatars/avatar-profile.png';
 import logoIcon from '../../assets/images/brands/logo-icon.png';
 import logoFull from '../../assets/images/brands/logo-full.png';
-import avatar from '../../assets/images/avatars/avatar-profile.png';
 
 import {
   MdPerson,
@@ -52,14 +53,14 @@ const Navbar = () => {
             <img
               src={logoIcon}
               alt="CHILL Logo"
-              className="h-auto w-5 md:w-25"
+              className="h-auto w-5 md:w-20 lg:w-25"
               aria-label="CHILL Logo"
             />
           </picture>
         </Link>
         <ul className="flex list-none items-center gap-4 lg:gap-20">
           {NAV_LINKS.map((link) => (
-            <li key={link.name} className="navbar__item">
+            <li key={link.name}>
               <Link
                 to={link.path}
                 className="text-text-light-secondary text-xs font-medium hover:text-white lg:text-lg"
@@ -100,7 +101,7 @@ const Navbar = () => {
               {DROPDOWN_MENU.map((item) => {
                 const Icon = item.icon;
                 return (
-                  <li key={item.name} className="navbar__dropdown-item">
+                  <li key={item.name}>
                     <Link
                       to={item.path}
                       className="hover:bg-outline-border hover:text-primary-200 flex items-center gap-2 px-3 py-2"
@@ -113,11 +114,10 @@ const Navbar = () => {
                   </li>
                 );
               })}
-              <li className="navbar__dropdown-item border-outline-border/50 mt-1 border-t pt-1">
+              <li className="border-outline-border/50 mt-1 border-t pt-1">
                 <button
                   type="button"
                   onClick={() => {
-                    // Logic Logout disini
                     setIsExpanded(false);
                   }}
                   className="hover:bg-outline-border flex w-full items-center gap-2 px-3 py-2 text-red-500 transition-colors"

@@ -1,8 +1,12 @@
+import HeroBanner from '../components/home/HeroBanner';
 import Navbar from '../components/layout/Navbar';
 const Home = () => {
   return (
-    <div className="bg-body-background min-h-screen">
+    <div className="bg-page-header-background min-h-screen">
       <Navbar />
+      <div>
+        <HeroBanner />
+      </div>
     </div>
   );
 };

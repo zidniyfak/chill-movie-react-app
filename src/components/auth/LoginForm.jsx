@@ -44,10 +44,6 @@ const LoginForm = () => {
     navigate('/');
   };
 
-  const handleGoogleLogin = () => {
-    alert('Masuk dengan Google sedang dialihkan...');
-  };
-
   return (
     <form
       onSubmit={handleSubmit}
@@ -112,7 +108,7 @@ const LoginForm = () => {
       </div>
 
       <div className="mt-2 flex flex-col items-center gap-2 lg:gap-3">
-        <Button type="submit" disabled={loading}>
+        <Button type="submit" variant="outline" isFullWidth>
           {loading ? 'Memproses...' : 'Masuk'}
         </Button>
 
@@ -122,8 +118,10 @@ const LoginForm = () => {
 
         <Button
           type="button"
-          onClick={handleGoogleLogin}
-          icon={<GoogleIcon className="h-3 w-3 lg:h-4 lg:w-4" />}
+          variant="outline"
+          isFullWidth
+          href="https://accounts.google.com/login"
+          icon={GoogleIcon}
         >
           Masuk dengan Google
         </Button>
