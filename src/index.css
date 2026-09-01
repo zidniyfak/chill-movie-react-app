@@ -4,6 +4,13 @@
 @theme {
   --font-primary: 'Lato', sans-serif;
 
+  /* Main Primary */
+  --color-primary-default: rgb(50, 84, 255);
+  --color-primary-100: rgb(36, 63, 219);
+  --color-primary-200: rgb(25, 45, 183);
+  --color-primary-300: rgb(15, 30, 147);
+  --color-primary-400: rgb(9, 20, 122);
+
   --color-text-dark-primary: #3a3541de;
   --color-text-dark-secondary: #3a3541ad;
   --color-text-dark-disabled: #3a354161;
@@ -56,11 +63,14 @@
 
   --text-2xs: 10px;
   --text-2xs--line-height: 1.4;
+
+  --text-3xs: 8px;
+  --text-3xs--line-height: 1;
 }
 
 @layer base {
   body {
-    @apply font-primary box-border text-xs tracking-wide text-white;
+    @apply font-primary bg-body-background box-border text-xs tracking-wide text-white;
   }
 }
 

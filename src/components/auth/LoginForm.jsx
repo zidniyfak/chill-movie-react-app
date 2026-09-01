@@ -1,9 +1,12 @@
 import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+
 import Button from '../common/Button';
 import Input from '../common/Input';
 import GoogleIcon from '../icons/GoogleIcon';
 
 const LoginForm = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
@@ -32,15 +35,11 @@ const LoginForm = () => {
     if (!validateForm()) return;
 
     setLoading(true);
-    // Simulating API request
     setTimeout(() => {
       setLoading(false);
       alert(`Berhasil Masuk! Selamat datang kembali, ${username}!`);
+      navigate('/');
     }, 1000);
-  };
-
-  const handleGoogleLogin = () => {
-    alert('Masuk dengan Google sedang dialihkan...');
   };
 
   return (
@@ -86,16 +85,12 @@ const LoginForm = () => {
         <div className="mt-1 flex items-center justify-between text-[10px] text-white lg:text-sm">
           <span className="text-text-light-secondary flex gap-1">
             Belum punya akun?
-            <a
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                alert('Halaman Pendaftaran belum tersedia.');
-              }}
+            <Link
+              to="/register"
               className="font-medium text-white hover:underline"
             >
               Daftar
-            </a>
+            </Link>
           </span>
           <a
             href="#"
@@ -111,7 +106,7 @@ const LoginForm = () => {
       </div>
 
       <div className="mt-2 flex flex-col items-center gap-2 lg:gap-3">
-        <Button type="submit" disabled={loading}>
+        <Button type="submit" variant="outline" isFullWidth>
           {loading ? 'Memproses...' : 'Masuk'}
         </Button>
 
@@ -121,8 +116,10 @@ const LoginForm = () => {
 
         <Button
           type="button"
-          onClick={handleGoogleLogin}
-          icon={<GoogleIcon className="h-3 w-3 lg:h-4 lg:w-4" />}
+          variant="outline"
+          isFullWidth
+          href="https://accounts.google.com/login"
+          icon={GoogleIcon}
         >
           Masuk dengan Google
         </Button>
