@@ -1,6 +1,7 @@
 import Navbar from '../components/layout/Navbar';
 import HeroBanner from '../components/home/HeroBanner';
 import MovieRow from '../components/movie/MovieRow';
+import Footer from '../components/layout/Footer';
 
 import { movies } from '../data/dummyMovies';
 
@@ -30,6 +31,7 @@ const Home = () => {
         />
         <MovieRow title="Rilis Baru" movies={movies} variant="portrait" />
       </div>
+      <Footer />
     </div>
   );
 };
