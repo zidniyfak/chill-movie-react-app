@@ -63,11 +63,14 @@
 
   --text-2xs: 10px;
   --text-2xs--line-height: 1.4;
+
+  --text-3xs: 8px;
+  --text-3xs--line-height: 1;
 }
 
 @layer base {
   body {
-    @apply font-primary box-border text-xs tracking-wide text-white bg-body-background;
+    @apply font-primary bg-body-background box-border text-xs tracking-wide text-white;
   }
 }
 

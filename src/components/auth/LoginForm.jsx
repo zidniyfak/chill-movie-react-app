@@ -35,13 +35,11 @@ const LoginForm = () => {
     if (!validateForm()) return;
 
     setLoading(true);
-    // Simulating API request
     setTimeout(() => {
       setLoading(false);
       alert(`Berhasil Masuk! Selamat datang kembali, ${username}!`);
+      navigate('/');
     }, 1000);
-
-    navigate('/');
   };
 
   return (

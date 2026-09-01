@@ -39,7 +39,8 @@ const HeroBanner = () => {
           <IconButton
             onClick={() => setIsMuted((prev) => !prev)}
             aria-label={isMuted ? 'Nyalakan suara' : 'Matikan suara'}
-            className="border-text-light-secondary text-text-light-secondary"
+            className="text-text-light-secondary"
+            variant="outline"
           >
             {isMuted ? (
               <MdVolumeOff className="h-4 w-4 lg:h-6 lg:w-6" />

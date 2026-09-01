@@ -1,9 +1,12 @@
 import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+
 import Button from '../common/Button';
 import Input from '../common/Input';
 import GoogleIcon from '../icons/GoogleIcon';
 
 const RegisterForm = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -43,6 +46,7 @@ const RegisterForm = () => {
     setTimeout(() => {
       setLoading(false);
       alert(`Pendaftaran Berhasil! Selamat bergabung, ${username}!`);
+      navigate('/login');
     }, 1000);
   };
 
@@ -66,7 +70,9 @@ const RegisterForm = () => {
           required
         />
         {errors.username && (
-          <span className="text-xs text-error-default pl-1">{errors.username}</span>
+          <span className="text-error-default pl-1 text-xs">
+            {errors.username}
+          </span>
         )}
       </div>
 
@@ -81,7 +87,9 @@ const RegisterForm = () => {
           required
         />
         {errors.password && (
-          <span className="text-xs text-error-default pl-1">{errors.password}</span>
+          <span className="text-error-default pl-1 text-xs">
+            {errors.password}
+          </span>
         )}
       </div>
 
@@ -97,40 +105,40 @@ const RegisterForm = () => {
             required
           />
           {errors.confirmPassword && (
-            <span className="text-xs text-error-default pl-1">{errors.confirmPassword}</span>
+            <span className="text-error-default pl-1 text-xs">
+              {errors.confirmPassword}
+            </span>
           )}
         </div>
 
-        <div className="flex items-center justify-between text-white text-[10px] lg:text-sm mt-1">
-          <span className="flex gap-1 text-text-light-secondary">
+        <div className="mt-1 flex items-center justify-between text-[10px] text-white lg:text-sm">
+          <span className="text-text-light-secondary flex gap-1">
             Sudah punya akun?
-            <a
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                alert('Halaman Login belum tersedia.');
-              }}
+            <Link
+              to="/login"
               className="font-medium text-white hover:underline"
             >
               Masuk
-            </a>
+            </Link>
           </span>
         </div>
       </div>
 
-      <div className="flex flex-col items-center gap-2 lg:gap-3 mt-2">
-        <Button type="submit" disabled={loading}>
+      <div className="mt-2 flex flex-col items-center gap-2 lg:gap-3">
+        <Button type="submit" variant="outline" isFullWidth disabled={loading}>
           {loading ? 'Memproses...' : 'Daftar'}
         </Button>
 
-        <div className="text-text-light-secondary text-xs lg:text-sm my-1">
+        <div className="text-text-light-secondary my-1 text-xs lg:text-sm">
           <span>Atau</span>
         </div>
 
         <Button
           type="button"
+          variant="outline"
+          isFullWidth
           onClick={handleGoogleRegister}
-          icon={<GoogleIcon className="h-3 w-3 lg:h-4 lg:w-4" />}
+          icon={GoogleIcon}
         >
           Daftar dengan Google
         </Button>
