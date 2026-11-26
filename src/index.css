@@ -70,7 +70,7 @@
 
 @layer base {
   body {
-    @apply font-primary bg-body-background box-border text-xs tracking-wide text-white;
+    @apply font-primary bg-page-header-background box-border text-xs tracking-wide text-white;
   }
 }
 

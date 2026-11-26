@@ -10,7 +10,7 @@ const Home = () => {
   const top10Movie = movies.filter((movie) => movie.badge === 'top10');
 
   return (
-    <div className="bg-page-header-background min-h-screen">
+    <div className="min-h-screen">
       <Navbar />
       <div className="flex flex-col gap-5">
         <HeroBanner />

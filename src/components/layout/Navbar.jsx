@@ -31,7 +31,7 @@ const NAV_LINKS = [
 const DROPDOWN_MENU = [
   {
     name: 'Profil Saya',
-    path: '/profil',
+    path: '/profile',
     icon: MdPerson,
   },
   {
