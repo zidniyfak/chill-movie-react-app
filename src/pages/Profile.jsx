@@ -1,12 +1,13 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Footer from '../components/layout/Footer';
 import Navbar from '../components/layout/Navbar';
 import avatar from '../assets/images/avatars/avatar-profile.png';
-import { movies } from '../data/dummyMovies';
 import MovieCard from '../components/movie/MovieCard';
+import { getUserWatchlist, toggleUserWatchlist } from '../utils/watchlist';
 
 const Profile = () => {
-  // 1. State untuk form data
+  // 1. Read Data User dari LocalStorage (Lazy Initialization)
   const [formData, setFormData] = useState(() => {
     const activeUser = localStorage.getItem('current_user');
     if (activeUser) {
@@ -20,12 +21,15 @@ const Profile = () => {
     return { username: '', email: '', password: '' };
   });
 
-  // State mode edit (toggle input aktif/non-aktif)
+  // 2. Read Data Watchlist Dinamis dari User Aktif
+  const [watchList, setWatchList] = useState(() => getUserWatchlist());
+
+  // State mode edit & notifikasi
   const [isEditingName, setIsEditingName] = useState(false);
   const [isEditingPassword, setIsEditingPassword] = useState(false);
   const [message, setMessage] = useState('');
 
-  // Handler input text
+  // Handler Input Form Text
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData((prev) => ({
@@ -34,41 +38,38 @@ const Profile = () => {
     }));
   };
 
-  // 3. UPDATE: Simpan perubahan username & password ke localStorage
+  // Handler Submit Form Profil (Update User Profile)
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Ambil data sesi user saat ini
     const activeUser = JSON.parse(localStorage.getItem('current_user'));
     if (!activeUser) return;
 
-    // Buat data user yang telah diperbarui
     const updatedUser = {
       ...activeUser,
       username: formData.username.trim(),
       password: formData.password,
     };
 
-    // Update sesi aktif (current_user)
+    // Update Sesi Aktif & Users List Utama
     localStorage.setItem('current_user', JSON.stringify(updatedUser));
-
-    // Update data spesifik user ini di array 'users_list'
     const usersList = JSON.parse(localStorage.getItem('users_list')) || [];
     const updatedUsersList = usersList.map((user) =>
       user.email === updatedUser.email ? updatedUser : user,
     );
     localStorage.setItem('users_list', JSON.stringify(updatedUsersList));
 
-    // Reset mode edit
     setIsEditingName(false);
     setIsEditingPassword(false);
-
-    // Tampilkan pesan sukses singkat
     setMessage('Profil berhasil diperbarui!');
     setTimeout(() => setMessage(''), 3000);
   };
 
-  const watchList = movies.filter((movie) => movie.isWatchlist);
+  // 3. Handler Toggle Watchlist Dinamis (Tambah / Hapus Film dari Profil)
+  const handleToggleWatchlist = (movie) => {
+    const updated = toggleUserWatchlist(movie);
+    setWatchList(updated);
+  };
 
   return (
     <div className="flex min-h-screen flex-col justify-between bg-[#181A1C] text-white">
@@ -83,6 +84,7 @@ const Profile = () => {
           </h1>
 
           <div className="desktop:gap-[80px] flex w-full flex-col-reverse items-start gap-6 lg:grid lg:grid-cols-12 lg:gap-10">
+            {/* Form Tampilan Profil */}
             <form
               onSubmit={handleSubmit}
               className="w-full space-y-4 md:space-y-5 lg:col-span-7"
@@ -93,6 +95,7 @@ const Profile = () => {
                 </div>
               )}
 
+              {/* Avatar Section */}
               <div className="flex items-center gap-4 md:gap-5">
                 <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-full bg-gray-700 md:h-20 md:w-20">
                   <img
@@ -113,6 +116,7 @@ const Profile = () => {
                 </div>
               </div>
 
+              {/* Input Nama Pengguna */}
               <div className="relative rounded-xl border border-gray-700 bg-[#22282A] p-3">
                 <label
                   htmlFor="username"
@@ -151,6 +155,7 @@ const Profile = () => {
                 </button>
               </div>
 
+              {/* Input Email (Read-Only) */}
               <div className="rounded-xl border border-gray-700 bg-[#22282A] p-3 opacity-60">
                 <label
                   htmlFor="email"
@@ -168,6 +173,7 @@ const Profile = () => {
                 />
               </div>
 
+              {/* Input Kata Sandi */}
               <div className="relative rounded-xl border border-gray-700 bg-[#22282A] p-3">
                 <label
                   htmlFor="password"
@@ -217,6 +223,7 @@ const Profile = () => {
               </div>
             </form>
 
+            {/* Banner Subscription Info */}
             <aside className="w-full lg:col-span-5">
               <div className="flex items-start gap-4 rounded-2xl border border-gray-700/50 bg-[#2D3035] p-6 shadow-lg">
                 <div className="flex-shrink-0 rounded-lg bg-red-500/20 p-2 text-2xl text-red-500">
@@ -249,23 +256,35 @@ const Profile = () => {
             <h2 id="mylist-heading" className="text-xl font-bold">
               Daftar Saya
             </h2>
-            <a
-              href="#lihat-semua"
+            {/* Mengarahkan langsung ke halaman MyList.jsx */}
+            <Link
+              to="/mylist"
               className="text-xs text-gray-400 transition-colors hover:text-white"
             >
               Lihat Semua
-            </a>
+            </Link>
           </div>
-          <div className="flex flex-wrap justify-center gap-3">
-            {watchList.map((movie) => (
-              <MovieCard
-                key={movie.id}
-                movie={movie}
-                variant="portrait"
-                popup={false}
-              />
-            ))}
-          </div>
+
+          {watchList.length === 0 ? (
+            <div className="rounded-xl border border-gray-800 bg-[#22282A] py-12 text-center text-sm text-gray-400">
+              Belum ada film di Daftar Saya.
+            </div>
+          ) : (
+            <div className="relative w-full">
+              <div className="-my-16 flex scrollbar-none gap-2.5 overflow-x-auto overflow-y-visible py-20 sm:gap-4 xl:gap-5">
+                {watchList.map((movie) => (
+                  <MovieCard
+                    key={movie.id}
+                    movie={movie}
+                    variant="portrait"
+                    popup={true}
+                    watchlist={watchList}
+                    onToggleWatchlist={handleToggleWatchlist}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </section>
       </main>
       <Footer />
