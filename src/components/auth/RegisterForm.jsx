@@ -42,12 +42,44 @@ const RegisterForm = () => {
     if (!validateForm()) return;
 
     setLoading(true);
-    // Simulating API request
+
     setTimeout(() => {
+      // 1. Ambil daftar user yang sudah ada dari localStorage
+      const existingUsers =
+        JSON.parse(localStorage.getItem('users_list')) || [];
+
+      // 2. Cek apakah username sudah digunakan
+      const isUsernameTaken = existingUsers.some(
+        (user) => user.username.toLowerCase() === username.trim().toLowerCase(),
+      );
+
+      if (isUsernameTaken) {
+        setLoading(false);
+        setErrors({
+          username: 'Username sudah digunakan, pilih username lain.',
+        });
+        return;
+      }
+
+      // 3. Buat data user baru lengkap dengan default profil dan watchlist
+      const newUser = {
+        id: Date.now(),
+        username: username.trim(),
+        email: `${username.trim().toLowerCase()}@chill.com`, // Email default berbasis username
+        password: password,
+        avatar: '', // Default avatar
+        isSubscribed: false,
+        watchlist: [],
+      };
+
+      // 4. Simpan ke users_list di localStorage
+      const updatedUsers = [...existingUsers, newUser];
+      localStorage.setItem('users_list', JSON.stringify(updatedUsers));
+
       setLoading(false);
-      alert(`Pendaftaran Berhasil! Selamat bergabung, ${username}!`);
+      alert(`Pendaftaran Berhasil! Selamat bergabung, ${newUser.username}!`);
       navigate('/login');
-    }, 1000);
+    }, 800);
   };
 
   const handleGoogleRegister = () => {
