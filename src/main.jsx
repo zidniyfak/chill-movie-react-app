@@ -10,6 +10,7 @@ import './index.css';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
+import MyList from './pages/MyList';
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
   {
     path: '/register',
     element: <Register />,
+  },
+  {
+    path: '/daftar-saya',
+    element: <MyList />,
   },
   {
     path: '*',
