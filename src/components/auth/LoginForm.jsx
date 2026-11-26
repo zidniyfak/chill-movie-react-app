@@ -16,14 +16,10 @@ const LoginForm = () => {
     const newErrors = {};
     if (!username.trim()) {
       newErrors.username = 'Username wajib diisi';
-    } else if (username.trim().length < 3) {
-      newErrors.username = 'Username minimal 3 karakter';
     }
 
     if (!password) {
       newErrors.password = 'Kata sandi wajib diisi';
-    } else if (password.length < 6) {
-      newErrors.password = 'Kata sandi minimal 6 karakter';
     }
 
     setErrors(newErrors);
@@ -35,11 +31,31 @@ const LoginForm = () => {
     if (!validateForm()) return;
 
     setLoading(true);
+
     setTimeout(() => {
-      setLoading(false);
-      alert(`Berhasil Masuk! Selamat datang kembali, ${username}!`);
-      navigate('/');
-    }, 1000);
+      // 1. Ambil daftar user dari localStorage
+      const usersList = JSON.parse(localStorage.getItem('users_list')) || [];
+
+      // 2. Cari user yang cocok berdasarkan username (case-insensitive) dan password
+      const foundUser = usersList.find(
+        (u) =>
+          u.username.toLowerCase() === username.trim().toLowerCase() &&
+          u.password === password,
+      );
+
+      if (foundUser) {
+        // 3. Simpan data user yang cocok ke current_user
+        localStorage.setItem('current_user', JSON.stringify(foundUser));
+        setLoading(false);
+        navigate('/');
+      } else {
+        setLoading(false);
+        setErrors({
+          username: 'Username atau kata sandi salah',
+          password: 'Username atau kata sandi salah',
+        });
+      }
+    }, 800);
   };
 
   return (
@@ -106,7 +122,7 @@ const LoginForm = () => {
       </div>
 
       <div className="mt-2 flex flex-col items-center gap-2 lg:gap-3">
-        <Button type="submit" variant="outline" isFullWidth>
+        <Button type="submit" variant="outline" isFullWidth disabled={loading}>
           {loading ? 'Memproses...' : 'Masuk'}
         </Button>
 
@@ -118,7 +134,7 @@ const LoginForm = () => {
           type="button"
           variant="outline"
           isFullWidth
-          href="https://accounts.google.com/login"
+          onClick={() => alert('Login dengan Google sedang dialihkan...')}
           icon={GoogleIcon}
         >
           Masuk dengan Google

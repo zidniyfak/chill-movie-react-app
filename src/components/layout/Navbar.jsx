@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import avatar from '../../assets/images/avatars/avatar-profile.png';
 import logoIcon from '../../assets/images/brands/logo-icon.png';
@@ -42,7 +42,13 @@ const DROPDOWN_MENU = [
 ];
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const handleLogout = () => {
+    localStorage.removeItem('current_user');
+    navigate('/login');
+  };
 
   return (
     <nav className="flex items-center justify-between p-5 lg:px-20 lg:py-7">
@@ -117,9 +123,7 @@ const Navbar = () => {
               <li className="border-outline-border/50 mt-1 border-t pt-1">
                 <button
                   type="button"
-                  onClick={() => {
-                    setIsExpanded(false);
-                  }}
+                  onClick={handleLogout}
                   className="hover:bg-outline-border flex w-full items-center gap-2 px-3 py-2 text-red-500 transition-colors"
                 >
                   <MdExitToApp className="h-auto w-4 lg:w-6" />

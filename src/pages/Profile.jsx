@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Footer from '../components/layout/Footer';
 import Navbar from '../components/layout/Navbar';
 import avatar from '../assets/images/avatars/avatar-profile.png';
@@ -5,12 +6,76 @@ import { movies } from '../data/dummyMovies';
 import MovieCard from '../components/movie/MovieCard';
 
 const Profile = () => {
+  // 1. State untuk form data
+  const [formData, setFormData] = useState(() => {
+    const activeUser = localStorage.getItem('current_user');
+    if (activeUser) {
+      const parsedUser = JSON.parse(activeUser);
+      return {
+        username: parsedUser.username || '',
+        email: parsedUser.email || '',
+        password: parsedUser.password || '',
+      };
+    }
+    return { username: '', email: '', password: '' };
+  });
+
+  // State mode edit (toggle input aktif/non-aktif)
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [isEditingPassword, setIsEditingPassword] = useState(false);
+  const [message, setMessage] = useState('');
+
+  // Handler input text
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+
+  // 3. UPDATE: Simpan perubahan username & password ke localStorage
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Ambil data sesi user saat ini
+    const activeUser = JSON.parse(localStorage.getItem('current_user'));
+    if (!activeUser) return;
+
+    // Buat data user yang telah diperbarui
+    const updatedUser = {
+      ...activeUser,
+      username: formData.username.trim(),
+      password: formData.password,
+    };
+
+    // Update sesi aktif (current_user)
+    localStorage.setItem('current_user', JSON.stringify(updatedUser));
+
+    // Update data spesifik user ini di array 'users_list'
+    const usersList = JSON.parse(localStorage.getItem('users_list')) || [];
+    const updatedUsersList = usersList.map((user) =>
+      user.email === updatedUser.email ? updatedUser : user,
+    );
+    localStorage.setItem('users_list', JSON.stringify(updatedUsersList));
+
+    // Reset mode edit
+    setIsEditingName(false);
+    setIsEditingPassword(false);
+
+    // Tampilkan pesan sukses singkat
+    setMessage('Profil berhasil diperbarui!');
+    setTimeout(() => setMessage(''), 3000);
+  };
+
   const watchList = movies.filter((movie) => movie.isWatchlist);
+
   return (
-    <div>
+    <div className="flex min-h-screen flex-col justify-between bg-[#181A1C] text-white">
       <Navbar />
+
       {/* Main Content Area */}
-      <main className="mx-auto w-full max-w-360 flex-1 space-y-12 px-4 py-8 md:px-20">
+      <main className="mx-auto w-full max-w-[1440px] flex-1 space-y-12 px-4 py-8 md:px-[80px]">
         {/* Section 1: Profil Saya & Status Berlangganan */}
         <section aria-labelledby="profile-heading">
           <h1 id="profile-heading" className="mb-6 text-2xl font-bold">
@@ -18,27 +83,36 @@ const Profile = () => {
           </h1>
 
           <div className="desktop:gap-[80px] flex w-full flex-col-reverse items-start gap-6 lg:grid lg:grid-cols-12 lg:gap-10">
-            {/* Form Tampilan Profil (Kiri - 7 Columns) */}
-            <form className="w-full space-y-4 md:space-y-5 lg:col-span-7">
-              {/* Avatar Section */}
+            <form
+              onSubmit={handleSubmit}
+              className="w-full space-y-4 md:space-y-5 lg:col-span-7"
+            >
+              {message && (
+                <div className="rounded-lg border border-green-600/40 bg-green-600/20 p-3 text-xs text-green-400">
+                  {message}
+                </div>
+              )}
+
               <div className="flex items-center gap-4 md:gap-5">
                 <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-full bg-gray-700 md:h-20 md:w-20">
                   <img
                     src={avatar}
-                    alt="Foto Profil William"
+                    alt="Foto Profil"
                     className="h-full w-full object-cover"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-blue-600 px-4 py-1.5 text-xs font-semibold text-blue-500 transition-colors hover:bg-blue-600 hover:text-white">
-                    <span>Ubah Foto</span>
-                    <input type="file" accept="image/*" className="hidden" />
-                  </label>
+                  <button
+                    type="button"
+                    onClick={() => alert('Fitur upload foto diabaikan dulu')}
+                    className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-blue-600 px-4 py-1.5 text-xs font-semibold text-blue-500 transition-colors hover:bg-blue-600 hover:text-white"
+                  >
+                    Ubah Foto
+                  </button>
                   <p className="text-[11px] text-gray-400">Maksimal 2MB</p>
                 </div>
               </div>
 
-              {/* Input Nama Pengguna */}
               <div className="relative rounded-xl border border-gray-700 bg-[#22282A] p-3">
                 <label
                   htmlFor="username"
@@ -49,11 +123,15 @@ const Profile = () => {
                 <input
                   id="username"
                   type="text"
-                  defaultValue="William"
-                  className="mt-0.5 w-full bg-transparent text-sm text-white outline-none"
+                  value={formData.username}
+                  onChange={handleChange}
+                  disabled={!isEditingName}
+                  className="mt-0.5 w-full bg-transparent text-sm text-white outline-none disabled:opacity-75"
+                  required
                 />
                 <button
                   type="button"
+                  onClick={() => setIsEditingName((prev) => !prev)}
                   className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 transition-colors hover:text-white"
                   aria-label="Edit Nama Pengguna"
                 >
@@ -73,7 +151,6 @@ const Profile = () => {
                 </button>
               </div>
 
-              {/* Input Email */}
               <div className="rounded-xl border border-gray-700 bg-[#22282A] p-3 opacity-60">
                 <label
                   htmlFor="email"
@@ -84,13 +161,13 @@ const Profile = () => {
                 <input
                   id="email"
                   type="email"
-                  defaultValue="william1980@gmail.com"
+                  value={formData.email}
                   readOnly
+                  disabled
                   className="mt-0.5 w-full cursor-not-allowed bg-transparent text-sm text-gray-300 outline-none"
                 />
               </div>
 
-              {/* Input Kata Sandi */}
               <div className="relative rounded-xl border border-gray-700 bg-[#22282A] p-3">
                 <label
                   htmlFor="password"
@@ -100,12 +177,16 @@ const Profile = () => {
                 </label>
                 <input
                   id="password"
-                  type="password"
-                  defaultValue="123456789012"
-                  className="mt-0.5 w-full bg-transparent text-sm text-white outline-none"
+                  type={isEditingPassword ? 'text' : 'password'}
+                  value={formData.password}
+                  onChange={handleChange}
+                  disabled={!isEditingPassword}
+                  className="mt-0.5 w-full bg-transparent text-sm text-white outline-none disabled:opacity-75"
+                  required
                 />
                 <button
                   type="button"
+                  onClick={() => setIsEditingPassword((prev) => !prev)}
                   className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-400 transition-colors hover:text-white"
                   aria-label="Edit Kata Sandi"
                 >
@@ -126,21 +207,22 @@ const Profile = () => {
               </div>
 
               {/* Tombol Simpan */}
-              <button
-                type="button"
-                className="rounded-full bg-blue-700 px-6 py-2 text-xs font-semibold text-white transition-colors hover:bg-blue-800"
-              >
-                Simpan
-              </button>
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  className="rounded-full bg-blue-700 px-6 py-2 text-xs font-semibold text-white transition-colors hover:bg-blue-800"
+                >
+                  Simpan
+                </button>
+              </div>
             </form>
 
-            {/* Banner Subscription Info (Kanan - 5 Columns) */}
-            <aside className="lg:col-span-5">
+            <aside className="w-full lg:col-span-5">
               <div className="flex items-start gap-4 rounded-2xl border border-gray-700/50 bg-[#2D3035] p-6 shadow-lg">
                 <div className="flex-shrink-0 rounded-lg bg-red-500/20 p-2 text-2xl text-red-500">
                   📢
                 </div>
-                <div className="space-y-2">
+                <div className="flex-1 space-y-2">
                   <h2 className="text-base leading-snug font-bold">
                     Saat ini anda belum berlangganan
                   </h2>
@@ -162,7 +244,6 @@ const Profile = () => {
           </div>
         </section>
 
-        {/* Section 2: Daftar Saya (Watchlist Cards Grid) */}
         <section aria-labelledby="mylist-heading" className="space-y-4">
           <div className="flex items-center justify-between">
             <h2 id="mylist-heading" className="text-xl font-bold">
